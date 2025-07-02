@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Калькулятор топлива</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+    }
+    label, select, input, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    button {
+      padding: 12px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:active {
+      background-color: #1e7e34;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      min-height: 60px;
+      transition: opacity 0.3s ease;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Калькулятор топлива</h2>
+
+<label for="truck">Выберите машину:</label>
+<select id="truck">
+  <option value="">-- Выберите --</option>
+  <option value="Ситрак" data-lvol="400" data-lheight="57" data-rvol="850" data-rheight="68">Ситрак</option>
+  <option value="Камаз" data-lvol="400" data-lheight="65" data-rvol="750" data-rheight="68.5">Камаз</option>
+  <option value="Мерседес 604" data-lvol="400" data-lheight="65" data-rvol="650" data-rheight="65">Мерседес 604</option>
+  <option value="Актрос белый" data-lvol="550" data-lheight="67" data-rvol="650" data-rheight="68">Актрос белый</option>
+  <option value="Ман" data-lvol="580" data-lheight="66" data-rvol="800" data-rheight="66">Ман</option>
+  <option value="Актрос красный" data-lvol="550" data-lheight="67" data-rvol="650" data-rheight="68">Актрос красный</option>
+  <option value="Актрос зеленый" data-lvol="650" data-lheight="67" data-rvol="780" data-rheight="68">Актрос зеленый</option>
+  <option value="Мерседес Зеленый" data-lvol="780" data-lheight="67" data-rvol="650" data-rheight="68">Мерседес Зеленый</option>
+</select>
+
+<label for="left">Левый бак (см):</label>
+<input type="number" id="left" step="0.1" placeholder="Введите уровень в см" />
+
+<label for="right">Правый бак (см):</label>
+<input type="number" id="right" step="0.1" placeholder="Введите уровень в см" />
+
+<div style="text-align:center;">
+  <button type="button" id="calculate">Рассчитать</button>
+</div>
+
+<div id="result">Результат появится здесь</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('calculate').addEventListener('click', function () {
+    const truck = document.getElementById('truck');
+    const selected = truck.options[truck.selectedIndex];
+    const lVol = parseFloat(selected.getAttribute('data-lvol'));
+    const lHeight = parseFloat(selected.getAttribute('data-lheight'));
+    const rVol = parseFloat(selected.getAttribute('data-rvol'));
+    const rHeight = parseFloat(selected.getAttribute('data-rheight'));
+
+    const leftCm = parseFloat(document.getElementById('left').value);
+    const rightCm = parseFloat(document.getElementById('right').value);
+    const resultDiv = document.getElementById('result');
+
+    if (!selected.value || isNaN(leftCm) || isNaN(rightCm)) {
+      resultDiv.innerHTML = "Пожалуйста, заполните все поля.";
+      return;
+    }
+
+    const leftLiters = (lVol * leftCm) / lHeight;
+    const rightLiters = (rVol * rightCm) / rHeight;
+    const total = leftLiters + rightLiters;
+
+    resultDiv.style.opacity = "0";
+    setTimeout(() => {
+      resultDiv.innerHTML = `
+        Левый бак: ${leftLiters.toFixed(1)} л<br>
+        Правый бак: ${rightLiters.toFixed(1)} л<br>
+        <strong>Всего: ${total.toFixed(1)} литров</strong>
+      `;
+      resultDiv.style.opacity = "1";
+    }, 100);
+  });
+});
+</script>
+
+</body>
+</html>
